@@ -8,15 +8,19 @@ import ProductDetails from './components/ProductDetails';
 import Cart from './components/Cart';
 import { categories, products } from './data/sampleData';
 
+
 function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
 
+
   const handleAddToCart = (product, rentalDetails) => {
     setCartItems([...cartItems, { ...product, ...rentalDetails }]);
   };
+
+    
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,6 +84,8 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
+       
+    
       </main>
     </div>
   );

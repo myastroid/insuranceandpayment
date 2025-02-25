@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import PaymentForm from '../paymenntcomponents/PaymentForm';
 const Cart = ({ items, onClose, setCartItems }) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,6 +13,14 @@ const Cart = ({ items, onClose, setCartItems }) => {
     pincode: ''
   });
 
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+
+  const handlePaymentSuccess = (values) => {
+    console.log('Payment successful:', values);
+  };
+
+  
+ 
   const calculateTotal = () => {
     return items.reduce((total, item) => total + item.totalAmount, 0);
   };
@@ -174,21 +182,29 @@ const Cart = ({ items, onClose, setCartItems }) => {
                   onChange={handleInputChange}
                 />
               </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                className="w-1/2 md:w-1/3 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 mt-6 mx-auto flex justify-center"
-
-
-              >
-                Proceed to Payment
-              </motion.button>
-            </motion.form>
-          )}
-        </>
+              {!showPaymentForm ? (
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    type="button" // Prevent form submission
+    onClick={() => setShowPaymentForm(true)} // Set state to true
+    className="w-1/2 md:w-1/3 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 mt-6 mx-auto flex justify-center"
+  >
+    Proceed to Payment
+  </motion.button>
+) : (
+  <PaymentForm
+  orderTotal={calculateTotal()}
+  onSuccess={handlePaymentSuccess} />
+)}
+ </motion.form>
+            
+       )}
+   </>
       )}
+     
     </motion.div>
+    
   );
 }
 
