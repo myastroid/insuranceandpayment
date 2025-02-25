@@ -7,6 +7,29 @@ const ProductDetails = ({ product, onBack, onAddToCart }) => {
   const [endDate, setEndDate] = useState('');
   const [selectedInsurance, setSelectedInsurance] = useState(null);
 
+  const getCurrentDateTime = () => {
+    return new Date().toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+  };
+
+  const handleStartDateChange = (e) => {
+    const selectedStartDate = e.target.value;
+    if (selectedStartDate >= getCurrentDateTime()) {
+      setStartDate(selectedStartDate);
+
+      // Reset end date if it's before the new start date
+      if (endDate && selectedStartDate > endDate) {
+        setEndDate('');
+      }
+    }
+  };
+
+  const handleEndDateChange = (e) => {
+    const selectedEndDate = e.target.value;
+    if (startDate && selectedEndDate >= startDate) {
+      setEndDate(selectedEndDate);
+    }
+  };
+
   const calculateTotalHours = () => {
     if (!startDate || !endDate) return 0;
     const start = new Date(startDate);
@@ -15,7 +38,7 @@ const ProductDetails = ({ product, onBack, onAddToCart }) => {
     // Calculate the difference in hours
     const diffInHours = (end - start) / (1000 * 60 * 60);
     
-    // Round up to the nearest hour and ensure minimum of 1 hour
+    // Round up to the nearest hour and ensure a minimum of 1 hour
     return Math.max(1, Math.round(diffInHours));
   };
 
@@ -98,7 +121,8 @@ const ProductDetails = ({ product, onBack, onAddToCart }) => {
                 <input
                   type="datetime-local"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={handleStartDateChange}
+                  min={getCurrentDateTime()} // Prevent selecting past times
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </div>
@@ -107,7 +131,8 @@ const ProductDetails = ({ product, onBack, onAddToCart }) => {
                 <input
                   type="datetime-local"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={handleEndDateChange}
+                  min={startDate || getCurrentDateTime()} // Prevent selecting past times & ensure end is after start
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </div>
@@ -178,6 +203,6 @@ const ProductDetails = ({ product, onBack, onAddToCart }) => {
       </div>
     </motion.div>
   );
-}
+};
 
 export default ProductDetails;
